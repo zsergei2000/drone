@@ -1,6 +1,6 @@
 <?php
 // gap_video_mosaic.php
-// 1764454000
+// 1764510368
 // Блок мозаїки кадрів. Дані отримуються через JS.
 ?>
 <section class="rounded-lg border border-slate-200 bg-white px-4 py-3 mt-2">
@@ -26,9 +26,11 @@
         </div>
     </div>
 
+    <!-- [1764510368] ADD — прокрутка для мозаїки з обмеженням на 2 рядки -->
     <div
         id="gapVideoMosaicGrid"
-        class="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2"
+        class="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 overflow-y-auto pr-1"
+        style="max-height: 0;"
     >
         <!-- JS підставить <img> -->
     </div>
