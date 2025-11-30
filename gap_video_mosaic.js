@@ -1,6 +1,6 @@
 // gap_video_mosaic.js
 // Отримання списку кадрів з 192-серверу через NET-file + побудова мозаїки.
-// 1764456000
+// 1764510368
 
 document.addEventListener("DOMContentLoaded", () => {
     const grid = document.getElementById("gapVideoMosaicGrid");
@@ -12,6 +12,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const LIST_URL = "/bug/main/dron/list_frames_net.php"; // [1764454000] FIX — правильний NET-wrapper на хості
+
+    // [1764510368] ADD — прокрутка та обмеження висоти мозаїки у 2 рядки
+    function applyGridMaxHeight() {
+        const firstTile = grid.querySelector("img");
+        if (!firstTile) {
+            grid.style.maxHeight = "0";
+            return;
+        }
+
+        const computed = getComputedStyle(grid);
+        const rowGap = parseFloat(computed.rowGap || computed.gap || "0") || 0;
+        const tileHeight = firstTile.clientHeight;
+
+        if (tileHeight > 0) {
+            grid.style.maxHeight = `${tileHeight * 2 + rowGap}px`;
+            grid.style.overflowY = "auto";
+            grid.style.paddingRight = "4px"; // [1764510368] ADD — місце під скролбар праворуч
+        }
+    }
 
     // [1764456000] ADD — створення плитки мозаїки з обробником кліку
     function createMosaicImage(frame) {
@@ -46,6 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+        img.addEventListener("load", applyGridMaxHeight); // [1764510368] ADD — оновлення висоти при завантаженні кадру
+
         return img;
     }
 
@@ -78,6 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     grid.appendChild(img);
                 }
             });
+
+            applyGridMaxHeight();
 
             if (statusEl) {
                 statusEl.textContent = `Завантажено кадрів: ${json.frames.length}`;
@@ -154,6 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     grid.appendChild(img);
                 }
             });
+
+            applyGridMaxHeight();
 
             if (statusEl) {
                 statusEl.textContent = `192 → FRAMES_LIST: отримано кадрів ${payload.frames.length}`;
